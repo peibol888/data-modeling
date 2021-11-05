@@ -76,4 +76,4 @@ class Fav_Planets(Base):
     user = relationship(User)
 
 ## Draw from SQLAlchemy base
-render_er(Base, 'diagram.png')
+render_er(Base, 'diagram_instagram.png')
