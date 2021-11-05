@@ -19,6 +19,7 @@ class User(Base):
     user_name = Column(String(250), unique=True, nullable=False)
     email = Column(String(120), unique=True, nullable=False)
     created_at = Column(DateTime(), default=datetime.now())
+    
 ## https://en.wikipedia.org/wiki/ISO/IEC_5218
 class GenderEnum(enum.Enum):
     Not_known = 0
