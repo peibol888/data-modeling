@@ -1,6 +1,7 @@
 import os
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String, Float, DateTime
+import enum
+from sqlalchemy import Column, ForeignKey, Integer, String, Float, DateTime, Enum
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -19,9 +20,9 @@ class GenderEnum(enum.Enum):
 ## Media type
 class MediaTypeEnum(enum.Enum):
     Unknown = 0
-    image = 1
-    video = 2
-    other = 3
+    Image = 1
+    Video = 2
+    Other = 3
 
 class User(Base):
     __tablename__ = 'user'
@@ -51,17 +52,17 @@ class Comment(Base):
 
     author_id = Column(Integer, ForeignKey("user.id"))
     user = relationship(User)
-    author_id = Column(Integer, ForeignKey("post.id"))
+    post_id = Column(Integer, ForeignKey("post.id"))
     post = relationship(Post)
 
 class Media(Base):
-    __tablename__ = 'comment'
+    __tablename__ = 'media'
 
     id = Column(Integer, primary_key=True)
-    type = Column(MediaTypeEnum)
+    type = Column(Enum(MediaTypeEnum))
     url = Column(String(1000))
 
-    author_id = Column(Integer, ForeignKey("post.id"))
+    post_id = Column(Integer, ForeignKey("post.id"))
     post = relationship(Post)
 
 ## Draw from SQLAlchemy base
