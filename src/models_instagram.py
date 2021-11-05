@@ -9,6 +9,20 @@ from eralchemy import render_er
 
 Base = declarative_base()
 
+## https://en.wikipedia.org/wiki/ISO/IEC_5218
+class GenderEnum(enum.Enum):
+    Unknown = 0
+    Male = 1
+    Female = 2
+    Not_applicable = 9
+
+## Media type
+class MediaTypeEnum(enum.Enum):
+    Unknown = 0
+    image = 1
+    video = 2
+    other = 3
+
 class User(Base):
     __tablename__ = 'user'
 
@@ -18,62 +32,37 @@ class User(Base):
     user_name = Column(String(250), unique=True, nullable=False)
     email = Column(String(120), unique=True, nullable=False)
     created_at = Column(DateTime(), default=datetime.now())
+    public_status = Column(String(250))
 
-## CHARACTERS
-class Characters(Base):
-    __tablename__ = 'characters'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
-    sex = Column(String(50))
-    age = Column(Integer)
-    race = Column(String(50))
-    language = Column(String(50))
-    height = Column(Integer)
-    eyes_color = Column(String(50)) 
-
-class Fav_Characters(Base):
-    __tablename__ = 'fav_characters'
+class Post(Base):
+    __tablename__ = 'post'
 
     id = Column(Integer, primary_key=True)
-    character_id = Column(Integer, ForeignKey('characters.id'))
-    character = relationship(Characters)
+
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
-## VEHICLES
-class Vehicles(Base):
-    __tablename__ = 'vehicles'
+class Comment(Base):
+    __tablename__ = 'comment'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    text = Column(String(500), nullable=False)
+    date = Column(DateTime(), default=datetime.now())
 
-class Fav_Vehicles(Base):
-    __tablename__ = 'fav_vehicles'
-
-    id = Column(Integer, primary_key=True)
-    vehicle_id = Column(Integer, ForeignKey('vehicles.id'))
-    vehicle = relationship(Vehicles)
-    user_id = Column(Integer, ForeignKey('user.id'))
+    author_id = Column(Integer, ForeignKey("user.id"))
     user = relationship(User)
+    author_id = Column(Integer, ForeignKey("post.id"))
+    post = relationship(Post)
 
-## PLANETS
-class Planets(Base):
-    __tablename__ = 'planets'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
-    radius = Column(Float)
-    population = Column(Integer)
-
-class Fav_Planets(Base):
-    __tablename__ = 'fav_planets'
+class Media(Base):
+    __tablename__ = 'comment'
 
     id = Column(Integer, primary_key=True)
-    planet_id = Column(Integer, ForeignKey('planets.id'))
-    planet = relationship(Planets)
-    user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship(User)
+    type = Column(MediaTypeEnum)
+    url = Column(String(1000))
+
+    author_id = Column(Integer, ForeignKey("post.id"))
+    post = relationship(Post)
 
 ## Draw from SQLAlchemy base
 render_er(Base, 'diagram_instagram.png')
